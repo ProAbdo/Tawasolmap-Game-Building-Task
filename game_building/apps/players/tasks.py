@@ -12,6 +12,7 @@ def update_building_status(player, building_id):
     if player_building and player_building.status == "in_progress":
         player.consume_resources(building.required_wood, building.required_stone)
         player_building.status = "completed"
+        player_building.celery_task_id = None
         updated = True
     if updated:
         player.save()

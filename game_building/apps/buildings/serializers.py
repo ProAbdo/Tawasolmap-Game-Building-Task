@@ -23,6 +23,8 @@ class BuildingSerializer(serializers.ModelSerializer):
 
 
 class BuildingCreateSerializer(serializers.ModelSerializer):
+    dependencies = serializers.JSONField(default=list, required=False)
+
     class Meta:
         model = Building
         fields = [
@@ -33,3 +35,12 @@ class BuildingCreateSerializer(serializers.ModelSerializer):
             "required_stone",
             "dependencies",
         ]
+
+    def validate_dependencies(self, value):
+        print(f"Validating dependencies: {value}")
+        for dep_id in value:
+            if not Building.objects.filter(building_id=dep_id).exists():
+                raise serializers.ValidationError(
+                    f"Dependency with id {dep_id} does not exist."
+                )
+        return value
