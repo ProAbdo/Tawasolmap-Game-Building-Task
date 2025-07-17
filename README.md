@@ -31,7 +31,7 @@ A real-time game simulation backend built with Django, MongoDB, Celery, Redis, a
 ### 1. Clone the Repository
 
 ```bash
-git clone <your-repo-url>
+git clone [<your-repo-url>](https://github.com/ProAbdo/Tawasolmap-Game-Building-Task.git)
 cd game_building
 ```
 
