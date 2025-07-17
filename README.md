@@ -188,8 +188,8 @@ The following environment variables are configured in `docker-compose.yaml`:
     "resources": {
       "wood": 10,
       "stone": 50,
+      },
       "buildings": []
-    }
   }
 }
 ```
@@ -216,8 +216,8 @@ The following environment variables are configured in `docker-compose.yaml`:
     "resources": {
       "wood": 10,
       "stone": 50,
+      },
       "buildings": []
-    }
   }
 }
 ```
@@ -242,6 +242,7 @@ The following environment variables are configured in `docker-compose.yaml`:
     "resources": {
       "wood": 10,
       "stone": 50,
+      },
       "buildings": [
         {
           "building_id": "1",
@@ -251,7 +252,6 @@ The following environment variables are configured in `docker-compose.yaml`:
           "celery_task_id": "task_id"
         }
       ]
-    }
   }
 }
 ```
@@ -277,8 +277,8 @@ The following environment variables are configured in `docker-compose.yaml`:
     "resources": {
       "wood": 200,
       "stone": 150,
+      },
       "buildings": []
-    }
   }
 }
 ```
@@ -346,8 +346,8 @@ The server sends automatic notifications for:
     "resources": {
       "wood": 10,
       "stone": 50,
+      }
       "buildings": []
-    }
   }
 }
 ```
