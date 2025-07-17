@@ -1,4 +1,4 @@
-# 🏗️ Game Building Backend
+# Game Building Backend
 
 A real-time game simulation backend built with Django, MongoDB, Celery, Redis, and WebSocket support using Django Channels.
 
@@ -14,7 +14,7 @@ A real-time game simulation backend built with Django, MongoDB, Celery, Redis, a
 
 ## 🛠️ Tech Stack
 
-- **Backend**: Django 50.2 ASGI
+- **Backend**: Django 5.2 ASGI
 - **Database**: MongoDB with django-mongodb-backend
 - **Message Broker**: Redis
 - **Task Queue**: Celery
@@ -50,30 +50,30 @@ This will start:
 
 ### 3. Access the Application
 
-- **Backend API**: http://localhost:800
-- **MongoDB**: mongodb://localhost:27017
-- **Redis**: redis://localhost:6379/
+- **Backend API**: http://localhost:8000
+- **MongoDB**: [mongodb://localhost:27017](mongodb://localhost:27017)
+- **Redis**: [redis://localhost:6379/](redis://localhost:6379/)
 
 ## 🔧 Environment Variables
 
 The following environment variables are configured in `docker-compose.yaml`:
 
-| Variable                 | Description               | Default                              |
-| ------------------------ | ------------------------- | ------------------------------------ |
-| `DJANGO_SETTINGS_MODULE` | Django settings module    | `game_building.config.settings`      |
-| `DJANGO_DEBUG`           | Debug mode                | `False`                              |
-| `ALLOWED_HOSTS`          | Allowed hosts             | `*`                                  |
-| `MONGO_URI`              | MongoDB connection string | `mongodb://mongo:2717/game_building` |
-| `REDIS_URL`              | Redis connection string   | `redis://redis:63790`                |
-| `CELERY_BROKER_URL`      | Celery broker URL         | `redis://redis:63790                 |
-| `CELERY_RESULT_BACKEND`  | Celery result backend     | `redis://redis:6379`                 |
-| `CHANNEL_LAYERS_HOSTS`   | Channels Redis hosts      | `redis:6379                          |
+| Variable                 | Description               | Default                               |
+| ------------------------ | ------------------------- | ------------------------------------- |
+| `DJANGO_SETTINGS_MODULE` | Django settings module    | `game_building.config.settings`       |
+| `DJANGO_DEBUG`           | Debug mode                | `False`                               |
+| `ALLOWED_HOSTS`          | Allowed hosts             | `*`                                   |
+| `MONGO_URI`              | MongoDB connection string | `mongodb://mongo:27017/game_building` |
+| `REDIS_URL`              | Redis connection string   | `redis://redis:6379/0`                |
+| `CELERY_BROKER_URL`      | Celery broker URL         | `redis://redis:6379/0`                |
+| `CELERY_RESULT_BACKEND`  | Celery result backend     | `redis://redis:6379/0`                |
+| `CHANNEL_LAYERS_HOSTS`   | Channels Redis hosts      | `redis:6379`                          |
 
 ## 🌐 WebSocket API
 
 ### Connection
 
-- **URL**: `ws://localhost:80ame/`
+- **URL**: `ws://localhost:8000/ws/game/`
 - **Protocol**: WebSocket
 
 ### Message Types
@@ -96,7 +96,7 @@ The following environment variables are configured in `docker-compose.yaml`:
 
    - Open Postman
    - Click NewWebSocket Request"
-   - Enter URL: `ws://localhost:80/game/`
+   - Enter URL: `ws://localhost:8000/ws/game/`
    - Click "Connect"
 
 2. **Send Messages**:
@@ -120,7 +120,7 @@ The following environment variables are configured in `docker-compose.yaml`:
 2. **Connect to WebSocket**:
 
    ```javascript
-   const ws = new WebSocket("ws://localhost:8000ws/game/");
+   const ws = new WebSocket("ws://localhost:8000/ws/game/");
 
    ws.onopen = function () {
      console.log("Connected to WebSocket");
@@ -377,4 +377,4 @@ game_building/
 └── Dockerfile          # Backend container
 ```
 
-**Happy Building! 🏗️✨**
+**Happy Building! ✨**
