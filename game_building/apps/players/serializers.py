@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Player, PlayerBuilding, Resources
+from django.contrib.auth.hashers import make_password
 
 
 class ResourcesSerializer(serializers.ModelSerializer):
@@ -47,6 +48,10 @@ class PlayerCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Player
         fields = ["username", "email", "password"]
+
+    def create(self, validated_data):
+        validated_data["password"] = make_password(validated_data["password"])
+        return super().create(validated_data)
 
 
 class PlayerLoginSerializer(serializers.Serializer):

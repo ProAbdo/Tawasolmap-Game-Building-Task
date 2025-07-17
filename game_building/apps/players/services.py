@@ -10,6 +10,7 @@ from game_building.apps.buildings.models import Building
 from datetime import timedelta
 from game_building.apps.players.tasks import complete_building_task
 from game_building.apps.players.serializers import PlayerResourcesUpdateSerializer
+from django.contrib.auth.hashers import check_password
 
 
 @sync_to_async
@@ -28,9 +29,9 @@ def login_player(data):
     if not serializer.is_valid():
         return None, "Invalid login data"
     try:
-        player = Player.objects.get(
-            username=data["username"], password=data["password"]
-        )
+        player = Player.objects.get(username=data["username"])
+        if not check_password(data["password"], player.password):
+            return None, "Invalid credentials"
         return player, None
     except Player.DoesNotExist:
         return None, "Invalid credentials"
