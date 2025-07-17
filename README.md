@@ -242,15 +242,7 @@ The following environment variables are configured in `docker-compose.yaml`:
       "wood": 1000,
       "stone": 1000,
       },
-      "buildings": [
-        {
-          "building_id": "1",
-          "status": "progress",
-          "started_at": "2025-07-07T07:00:00Z",
-          "finish_eta": "2025-07-07T07:00:00Z",
-          "celery_task_id": "task_id"
-        }
-      ]
+      "buildings": []
   }
 }
 ```
