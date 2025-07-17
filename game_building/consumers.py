@@ -11,6 +11,7 @@ from game_building.apps.players.services import (
 )
 from game_building.apps.buildings.services import accelerate_building, create_building
 from game_building.apps.buildings.serializers import BuildingSerializer
+from game_building.apps.players.models import Player
 
 
 class GameConsumer(AsyncWebsocketConsumer):
@@ -56,8 +57,6 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def handle_register(self, data):
         result = await register_player(data)
         if result["type"] == "register_success":
-            from game_building.apps.players.models import Player
-
             self.player = await sync_to_async(Player.objects.get)(
                 username=data["username"]
             )
@@ -86,7 +85,9 @@ class GameConsumer(AsyncWebsocketConsumer):
         if not self.player:
             await self.send(json.dumps({"type": "error", "error": "Not authenticated"}))
             return
+
         building_id = data.get("building_id")
+        self.player = await sync_to_async(Player.objects.get)(id=self.player.id)
         can_start, error, building = await can_start_building(self.player, building_id)
         if not can_start:
             await self.send(json.dumps({"type": "error", "error": error}))
@@ -120,8 +121,6 @@ class GameConsumer(AsyncWebsocketConsumer):
         if not self.player:
             await self.send(json.dumps({"type": "error", "error": "Not authenticated"}))
             return
-        from game_building.apps.players.models import Player
-
         self.player = await sync_to_async(Player.objects.get)(id=self.player.id)
         building_id = data.get("building_id")
         percent = data.get("percent", 100)
@@ -132,12 +131,11 @@ class GameConsumer(AsyncWebsocketConsumer):
         if not self.player:
             await self.send(json.dumps({"type": "error", "error": "Not authenticated"}))
             return
+        self.player = await sync_to_async(Player.objects.get)(id=self.player.id)
         result = await update_player_resources(self.player, data)
         await self.send(json.dumps(result))
 
     async def handle_get_player_info(self, data):
-        from game_building.apps.players.models import Player
-
         if not self.player:
             await self.send(json.dumps({"type": "error", "error": "Not authenticated"}))
             return
