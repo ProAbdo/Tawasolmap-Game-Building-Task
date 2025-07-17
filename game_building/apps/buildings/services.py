@@ -1,9 +1,11 @@
 from asgiref.sync import sync_to_async
-from apps.buildings.models import Building
-from apps.buildings.serializers import BuildingCreateSerializer, BuildingSerializer
+from game_building.apps.buildings.models import Building
+from game_building.apps.buildings.serializers import (
+    BuildingCreateSerializer,
+)
 from datetime import timedelta
 from django.utils import timezone
-from apps.players.tasks import complete_building_task
+from game_building.apps.players.tasks import complete_building_task
 from game_building.config.celery import app as celery_app
 
 revoke = celery_app.control.revoke

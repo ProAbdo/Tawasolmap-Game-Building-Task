@@ -1,14 +1,14 @@
 from asgiref.sync import sync_to_async
 from django.utils import timezone
-from apps.players.models import Player, PlayerBuilding
-from apps.players.serializers import (
+from game_building.apps.players.models import Player, PlayerBuilding
+from game_building.apps.players.serializers import (
     PlayerCreateSerializer,
     PlayerSerializer,
     PlayerLoginSerializer,
 )
-from apps.buildings.models import Building
+from game_building.apps.buildings.models import Building
 from datetime import timedelta
-from apps.players.tasks import complete_building_task
+from game_building.apps.players.tasks import complete_building_task
 
 
 @sync_to_async

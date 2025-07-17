@@ -5,7 +5,7 @@ from channels.layers import get_channel_layer
 
 def update_building_status(player, building_id):
     updated = False
-    from apps.buildings.models import Building
+    from game_building.apps.buildings.models import Building
 
     building = Building.objects.get(building_id=building_id)
     player_building = player.get_building(building_id)
@@ -21,8 +21,8 @@ def update_building_status(player, building_id):
 
 @celery_app.task
 def complete_building_task(player_id, building_id):
-    from apps.players.models import Player
-    from apps.players.serializers import PlayerSerializer
+    from game_building.apps.players.models import Player
+    from game_building.apps.players.serializers import PlayerSerializer
 
     player = Player.objects.get(id=player_id)
     updated = update_building_status(player, building_id)

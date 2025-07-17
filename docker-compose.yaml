@@ -1,0 +1,48 @@
+services:
+  backend:
+    build: .
+    command: uvicorn game_building.config.asgi:application --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    environment:
+      DJANGO_SETTINGS_MODULE: game_building.config.settings
+      DJANGO_DEBUG: "False"
+      SECRET_KEY: "django-insecure-=2lc6s3tbt893$or^92b2(@z^u7vowx5^#*vzloto+yptr%+a#"
+      ALLOWED_HOSTS: "*"
+      MONGO_URI: "mongodb://mongo:27017/game_building"
+      REDIS_URL: "redis://redis:6379/0"
+      CELERY_BROKER_URL: "redis://redis:6379/0"
+      CELERY_RESULT_BACKEND: "redis://redis:6379/0"
+      CHANNEL_LAYERS_BACKEND: "channels_redis.core.RedisChannelLayer"
+      CHANNEL_LAYERS_HOSTS: "redis:6379"
+    depends_on:
+      - redis
+      - mongo
+
+  celery:
+    build: .
+    command: celery -A game_building.config.celery worker --loglevel=info
+    environment:
+      DJANGO_SETTINGS_MODULE: game_building.config.settings
+      DJANGO_DEBUG: "False"
+      SECRET_KEY: "django-insecure-=2lc6s3tbt893$or^92b2(@z^u7vowx5^#*vzloto+yptr%+a#"
+      ALLOWED_HOSTS: "*"
+      MONGO_URI: "mongodb://mongo:27017/game_building"
+      REDIS_URL: "redis://redis:6379/0"
+      CELERY_BROKER_URL: "redis://redis:6379/0"
+      CELERY_RESULT_BACKEND: "redis://redis:6379/0"
+    depends_on:
+      - redis
+      - mongo
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  mongo:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: game_building

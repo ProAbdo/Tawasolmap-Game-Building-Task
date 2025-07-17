@@ -10,38 +10,31 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 import django_mongodb_backend
-
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-=2lc6s3tbt893$or^92b2(@z^u7vowx5^#*vzloto+yptr%+a#"
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
+# SECURITY
+SECRET_KEY = os.getenv(
+    "SECRET_KEY", "django-insecure-=2lc6s3tbt893$or^92b2(@z^u7vowx5^#*vzloto+yptr%+a#"
+)
+DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
 
 # Application definition
-
 INSTALLED_APPS = [
-    "config.apps.MongoAdminConfig",
-    "config.apps.MongoAuthConfig",
-    "config.apps.MongoContentTypesConfig",
+    "game_building.config.apps.MongoAdminConfig",
+    "game_building.config.apps.MongoAuthConfig",
+    "game_building.config.apps.MongoContentTypesConfig",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "apps.players",
-    "apps.buildings",
+    "game_building.apps.players",
+    "game_building.apps.buildings",
     "channels",
     "celery",
 ]
@@ -56,8 +49,11 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "config.urls"
+ROOT_URLCONF = "game_building.config.urls"
+WSGI_APPLICATION = "game_building.config.wsgi.application"
+ASGI_APPLICATION = "game_building.config.asgi.application"
 
+# Templates
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -65,6 +61,7 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
+                "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
@@ -73,82 +70,38 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "config.wsgi.application"
-
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-DATABASES = {
-    "default": django_mongodb_backend.parse_uri(
-        "mongodb+srv://abdurrahmanhussein500:AwZPTOuIRVWfDx2Y@cluster0.jr1auuf.mongodb.net/sample_mflix.comments?retryWrites=true&w=majority&appName=Cluster0"
-    ),
-}
-
-# Database routers
-# https://docs.djangoproject.com/en/dev/ref/settings/#database-routers
-DATABASE_ROUTERS = ["django_mongodb_backend.routers.MongoRouter"]
-
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
-]
-
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
-LANGUAGE_CODE = "en-us"
-
-TIME_ZONE = "UTC"
-
-USE_I18N = True
-
-USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
+# Static files
 STATIC_URL = "static/"
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = "django_mongodb_backend.fields.ObjectIdAutoField"
 
-
-MIGRATION_MODULES = {
-    "admin": "mongo_migrations.admin",
-    "auth": "mongo_migrations.auth",
-    "contenttypes": "mongo_migrations.contenttypes",
+# ─── DATABASE ──────────────────────────────────────────────────────────────────
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/game_building")
+DATABASES = {
+    "default": django_mongodb_backend.parse_uri(MONGO_URI),
 }
+DATABASE_ROUTERS = ["django_mongodb_backend.routers.MongoRouter"]
 
-# Celery Configuration
-CELERY_BROKER_URL = "redis://localhost:6379/0"
-CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+# ─── CELERY & REDIS ────────────────────────────────────────────────────────────
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "redis://localhost:6379/0")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND", "redis://localhost:6379/0")
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
-CELERY_TIMEZONE = TIME_ZONE
+CELERY_TIMEZONE = os.getenv("TIME_ZONE", "UTC")
 CELERY_ENABLE_UTC = True
 
-# Redis Configuration
-REDIS_URL = "redis://localhost:6379/0"
-# Django REST Framework Configuration
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+
+# ─── CHANNELS ──────────────────────────────────────────────────────────────────
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}
+# ─── REST FRAMEWORK ────────────────────────────────────────────────────────────
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
@@ -164,13 +117,15 @@ REST_FRAMEWORK = {
     ],
 }
 
-# Channels Configuration
-ASGI_APPLICATION = "config.asgi.application"
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
-        },
-    },
+# ─── INTERNATIONALIZATION ──────────────────────────────────────────────────────
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = os.getenv("TIME_ZONE", "UTC")
+USE_I18N = True
+USE_TZ = True
+
+# ─── MIGRATIONS ────────────────────────────────────────────────────────────────
+MIGRATION_MODULES = {
+    "admin": "game_building.mongo_migrations.admin",
+    "auth": "game_building.mongo_migrations.auth",
+    "contenttypes": "game_building.mongo_migrations.contenttypes",
 }

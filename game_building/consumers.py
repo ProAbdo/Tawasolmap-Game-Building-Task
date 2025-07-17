@@ -1,12 +1,14 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from apps.players.services import (
+from asgiref.sync import sync_to_async
+from game_building.apps.players.services import (
     register_player,
     login_player,
     can_start_building,
     start_building_for_player,
 )
-from apps.buildings.services import create_building, accelerate_building
+from game_building.apps.buildings.services import accelerate_building, create_building
+from game_building.apps.buildings.serializers import BuildingSerializer
 
 
 class GameConsumer(AsyncWebsocketConsumer):
@@ -44,14 +46,15 @@ class GameConsumer(AsyncWebsocketConsumer):
                 )
         except Exception as e:
             await self.send(json.dumps({"type": "error", "error": str(e)}))
-            raise e
 
     async def handle_register(self, data):
         result = await register_player(data)
         if result["type"] == "register_success":
-            from apps.players.models import Player
+            from game_building.apps.players.models import Player
 
-            self.player = Player.objects.get(username=data["username"])
+            self.player = await sync_to_async(Player.objects.get)(
+                username=data["username"]
+            )
             await self.channel_layer.group_add(
                 f"player_{self.player.id}", self.channel_name
             )
@@ -64,7 +67,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_add(
                 f"player_{self.player.id}", self.channel_name
             )
-            from apps.players.serializers import PlayerSerializer
+            from game_building.apps.players.serializers import PlayerSerializer
 
             serializer = PlayerSerializer(player)
             await self.send(
@@ -96,8 +99,6 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def handle_create_building(self, data):
         building, error = await create_building(data)
         if building:
-            from apps.buildings.serializers import BuildingSerializer
-
             serializer = BuildingSerializer(building)
             await self.send(
                 json.dumps(
