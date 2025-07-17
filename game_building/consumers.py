@@ -6,6 +6,8 @@ from game_building.apps.players.services import (
     login_player,
     can_start_building,
     start_building_for_player,
+    update_player_resources,
+    get_player_info,
 )
 from game_building.apps.buildings.services import accelerate_building, create_building
 from game_building.apps.buildings.serializers import BuildingSerializer
@@ -38,6 +40,10 @@ class GameConsumer(AsyncWebsocketConsumer):
                 await self.handle_create_building(data)
             elif msg_type == "accelerate_building":
                 await self.handle_accelerate_building(data)
+            elif msg_type == "update_resources":
+                await self.handle_update_resources(data)
+            elif msg_type == "get_player_info":
+                await self.handle_get_player_info(data)
             else:
                 await self.send(
                     json.dumps(
@@ -117,6 +123,20 @@ class GameConsumer(AsyncWebsocketConsumer):
         building_id = data.get("building_id")
         percent = data.get("percent", 100)
         result = await accelerate_building(self.player, building_id, percent)
+        await self.send(json.dumps(result))
+
+    async def handle_update_resources(self, data):
+        if not self.player:
+            await self.send(json.dumps({"type": "error", "error": "Not authenticated"}))
+            return
+        result = await update_player_resources(self.player, data)
+        await self.send(json.dumps(result))
+
+    async def handle_get_player_info(self, data):
+        if not self.player:
+            await self.send(json.dumps({"type": "error", "error": "Not authenticated"}))
+            return
+        result = await get_player_info(self.player)
         await self.send(json.dumps(result))
 
     async def building_completed(self, event):

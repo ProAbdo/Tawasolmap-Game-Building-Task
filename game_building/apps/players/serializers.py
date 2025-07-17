@@ -64,3 +64,13 @@ class PlayerBuildingCreateSerializer(serializers.ModelSerializer):
             "finish_eta",
             "celery_task_id",
         ]
+
+
+class PlayerResourcesUpdateSerializer(serializers.Serializer):
+    wood = serializers.IntegerField(min_value=0, required=False)
+    stone = serializers.IntegerField(min_value=0, required=False)
+
+    def validate(self, data):
+        if not data:
+            raise serializers.ValidationError("At least one resource must be provided.")
+        return data

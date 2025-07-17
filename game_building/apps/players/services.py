@@ -9,6 +9,7 @@ from game_building.apps.players.serializers import (
 from game_building.apps.buildings.models import Building
 from datetime import timedelta
 from game_building.apps.players.tasks import complete_building_task
+from game_building.apps.players.serializers import PlayerResourcesUpdateSerializer
 
 
 @sync_to_async
@@ -87,3 +88,22 @@ def start_building_for_player(player, building):
     pb.celery_task_id = result.id
     player.save()
     return completion_time
+
+
+@sync_to_async
+def update_player_resources(player, data):
+    serializer = PlayerResourcesUpdateSerializer(data=data)
+    if not serializer.is_valid():
+        return {"type": "update_failed", "error": serializer.errors}
+    update_data = serializer.validated_data
+    if "wood" in update_data:
+        player.resources.wood = update_data["wood"]
+    if "stone" in update_data:
+        player.resources.stone = update_data["stone"]
+    player.save()
+    return {"type": "update_success", "player": PlayerSerializer(player).data}
+
+
+@sync_to_async
+def get_player_info(player):
+    return {"type": "player_info", "player": PlayerSerializer(player).data}

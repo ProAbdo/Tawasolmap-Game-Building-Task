@@ -2,6 +2,8 @@ services:
   backend:
     build: .
     command: uvicorn game_building.config.asgi:application --host 0.0.0.0 --port 8000
+    container_name: game-building-backend
+    restart: always
     ports:
       - "8000:8000"
     environment:
@@ -16,12 +18,12 @@ services:
       CHANNEL_LAYERS_BACKEND: "channels_redis.core.RedisChannelLayer"
       CHANNEL_LAYERS_HOSTS: "redis:6379"
     depends_on:
-      - redis
       - mongo
 
   celery:
     build: .
     command: celery -A game_building.config.celery worker --loglevel=info
+    container_name: game-building-celery
     environment:
       DJANGO_SETTINGS_MODULE: game_building.config.settings
       DJANGO_DEBUG: "False"
@@ -36,13 +38,24 @@ services:
       - mongo
 
   redis:
-    image: redis:7
+    image: redis:7.2-alpine
+    container_name: redis
+    restart: always
     ports:
       - "6379:6379"
+    volumes:
+      - redis-data:/data
 
   mongo:
     image: mongo:6
+    container_name: game-building-mongoDB
     ports:
       - "27017:27017"
     environment:
       MONGO_INITDB_DATABASE: game_building
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  redis-data:
+  mongo-data:
