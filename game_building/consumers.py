@@ -120,6 +120,9 @@ class GameConsumer(AsyncWebsocketConsumer):
         if not self.player:
             await self.send(json.dumps({"type": "error", "error": "Not authenticated"}))
             return
+        from game_building.apps.players.models import Player
+
+        self.player = await sync_to_async(Player.objects.get)(id=self.player.id)
         building_id = data.get("building_id")
         percent = data.get("percent", 100)
         result = await accelerate_building(self.player, building_id, percent)
@@ -133,9 +136,12 @@ class GameConsumer(AsyncWebsocketConsumer):
         await self.send(json.dumps(result))
 
     async def handle_get_player_info(self, data):
+        from game_building.apps.players.models import Player
+
         if not self.player:
             await self.send(json.dumps({"type": "error", "error": "Not authenticated"}))
             return
+        self.player = await sync_to_async(Player.objects.get)(id=self.player.id)
         result = await get_player_info(self.player)
         await self.send(json.dumps(result))
 
