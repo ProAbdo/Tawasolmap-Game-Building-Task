@@ -303,7 +303,7 @@ The following environment variables are configured in `docker-compose.yaml`:
         "id": "687948b0bffebbedce620a57",
         "building_id": 1,
         "name": "Tower",
-        "build_time": 110,
+        "build_time": 100,
         "required_wood": 1,
         "required_stone": 1,
         "dependencies": []
