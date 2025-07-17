@@ -185,8 +185,8 @@ The following environment variables are configured in `docker-compose.yaml`:
     "username": "player1",
     "email": "player1@example.com",
     "resources": {
-      "wood": 10,
-      "stone": 50,
+      "wood": 1000,
+      "stone": 1000,
       },
       "buildings": []
   }
@@ -213,8 +213,8 @@ The following environment variables are configured in `docker-compose.yaml`:
     "username": "player1",
     "email": "player1@example.com",
     "resources": {
-      "wood": 10,
-      "stone": 50,
+      "wood": 1000,
+      "stone": 1000,
       },
       "buildings": []
   }
@@ -239,8 +239,8 @@ The following environment variables are configured in `docker-compose.yaml`:
     "username": "player1",
     "email": "player1@example.com",
     "resources": {
-      "wood": 10,
-      "stone": 50,
+      "wood": 1000,
+      "stone": 1000,
       },
       "buildings": [
         {
