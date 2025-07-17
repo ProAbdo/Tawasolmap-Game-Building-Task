@@ -372,8 +372,8 @@ The server sends automatic notifications for:
     "id": "player_id",
     "username": "player1",
     "resources": {
-      "wood": 10,
-      "stone": 50,
+      "wood": 199,
+      "stone": 449,
       }
       "buildings": [
          {
