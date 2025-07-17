@@ -375,7 +375,15 @@ The server sends automatic notifications for:
       "wood": 10,
       "stone": 50,
       }
-      "buildings": []
+      "buildings": [
+         {
+             "building_id": "1",
+             "status": "completed",
+             "started_at": "2025-07-17T15:50:34.687000Z",
+             "finish_eta": "2025-07-17T15:51:16.759000Z",
+             "celery_task_id": null
+         }
+      ]
   }
 }
 ```
