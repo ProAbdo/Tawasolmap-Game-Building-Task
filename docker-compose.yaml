@@ -9,7 +9,6 @@ services:
     environment:
       DJANGO_SETTINGS_MODULE: game_building.config.settings
       DJANGO_DEBUG: "False"
-      SECRET_KEY: "django-insecure-=2lc6s3tbt893$or^92b2(@z^u7vowx5^#*vzloto+yptr%+a#"
       ALLOWED_HOSTS: "*"
       MONGO_URI: "mongodb://mongo:27017/game_building"
       REDIS_URL: "redis://redis:6379/0"
@@ -27,7 +26,6 @@ services:
     environment:
       DJANGO_SETTINGS_MODULE: game_building.config.settings
       DJANGO_DEBUG: "False"
-      SECRET_KEY: "django-insecure-=2lc6s3tbt893$or^92b2(@z^u7vowx5^#*vzloto+yptr%+a#"
       ALLOWED_HOSTS: "*"
       MONGO_URI: "mongodb://mongo:27017/game_building"
       REDIS_URL: "redis://redis:6379/0"

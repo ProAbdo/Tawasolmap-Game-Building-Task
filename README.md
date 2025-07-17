@@ -1,378 +1,380 @@
 # 🏗️ Game Building Backend
 
-A Django backend for real-time building simulation game using Django, MongoDB, WebSocket, Redis , and Celery.
+A real-time game simulation backend built with Django, MongoDB, Celery, Redis, and WebSocket support using Django Channels.
 
-## 📋 Project Overview
+## ✨ Features
 
-This project is a comprehensive backend system for a building construction game where players can:
+- **🔐 Player Authentication**: Register and login via WebSocket
+- **🏗️ Building Construction**: Start, accelerate, and track building progress
+- **💰 Resource Management**: Wood and stone resources with real-time updates
+- **⚡ Real-time Notifications**: WebSocket-based live updates
+- **🔄 Background Tasks**: Celery for scheduled building completion
+- **📊 MongoDB Database**: NoSQL database with embedded documents
+- **🚀 Scalable Architecture**: Microservices with Docker
 
-- Register and login
-- Build various structures
-- Manage resources (wood and stone)
-- Accelerate building construction
-- Receive real-time notifications when buildings complete
+## 🛠️ Tech Stack
 
-## 🏗️ Technical Architecture
+- **Backend**: Django 50.2 ASGI
+- **Database**: MongoDB with django-mongodb-backend
+- **Message Broker**: Redis
+- **Task Queue**: Celery
+- **WebSocket**: Django Channels
+- **Containerization**: Docker & Docker Compose
 
-### Technologies Used
+## 📋 Prerequisites
 
-- **Django 5.2** - Main web framework
-- **MongoDB** - Database (with django_mongodb_backend)
-- **Django Channels** - WebSocket support for real-time communication
-- **Celery** - Background task processing
-- **Redis** - Message broker and caching
-- **Docker & Docker Compose** - Application containerization
+- [Docker](https://www.docker.com/) (v20.10)
+- [Docker Compose](https://docs.docker.com/compose/) (v2)
 
-### Project Structure
-
-```
-game_building/
-├── apps/
-│   ├── players/          # Players application
-│   │   ├── models.py     # Player and resources models
-│   │   ├── services.py   # Business logic
-│   │   ├── serializers.py # Data serialization
-│   │   └── tasks.py      # Celery tasks
-│   └── buildings/        # Buildings application
-│       ├── models.py     # Building models
-│       ├── services.py   # Building logic
-│       └── serializers.py
-├── config/               # Django settings
-├── consumers.py          # WebSocket handlers
-├── routing.py           # WebSocket routing
-└── docker-compose.yaml  # Docker configuration
-```
-
-## 🚀 Prerequisites
-
-### Required
-
-- [Docker](https://www.docker.com/get-started) (version20.10
-- [Docker Compose](https://docs.docker.com/compose/install/) (version 2.0+)
-
-### Optional
-
--Git](https://git-scm.com/) - for cloning the repository
-
-- [Postman](https://www.postman.com/) or any WebSocket client for testing
-
-## ⚙️ Installation & Setup
+## 🚀 Quick Start
 
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone <your-repo-url>
 cd game_building
 ```
 
-### 2. Run the Project
+### 2. Start All Services
 
 ```bash
-# Build and start all services
 docker-compose up --build
-
-# Or run in background
-docker-compose up -d --build
 ```
 
-### 3. Verify Services
+This will start:
 
-After startup, the following services will be available:
+- **Backend**: Django ASGI server on port 8000
+- **Celery Worker**: Background task processor
+- **MongoDB**: Database on port 27017
+- **Redis** : Message broker on port 6379
 
-- **Backend API**: http://localhost:80**MongoDB**: localhost:27017- **Redis**: localhost:6379. Stop the Project
+### 3. Access the Application
 
-```bash
-docker-compose down
-```
+- **Backend API**: http://localhost:800
+- **MongoDB**: mongodb://localhost:27017
+- **Redis**: redis://localhost:6379/
 
 ## 🔧 Environment Variables
 
-Environment variables are set in `docker-compose.yaml`:
+The following environment variables are configured in `docker-compose.yaml`:
 
-| Variable                 | Default Value                           | Description               |
-| ------------------------ | --------------------------------------- | ------------------------- |
-| `DJANGO_SETTINGS_MODULE` | `game_building.config.settings`         | Django settings module    |
-| `DJANGO_DEBUG`           | `False`                                 | Development mode          |
-| `SECRET_KEY`             | `django-insecure-...`                   | Security key              |
-| `MONGO_URI`              | `mongodb://mongo:2717uilding`           | MongoDB connection string |
-| `REDIS_URL`              | `redis://redis:6379/0`                  | Redis connection string   |
-| `CELERY_BROKER_URL`      | `redis://redis:6379/0 Celery broker URL |
-| `CHANNEL_LAYERS_HOSTS`   | `redis:6379`                            | WebSocket channel hosts   |
+| Variable                 | Description               | Default                              |
+| ------------------------ | ------------------------- | ------------------------------------ |
+| `DJANGO_SETTINGS_MODULE` | Django settings module    | `game_building.config.settings`      |
+| `DJANGO_DEBUG`           | Debug mode                | `False`                              |
+| `ALLOWED_HOSTS`          | Allowed hosts             | `*`                                  |
+| `MONGO_URI`              | MongoDB connection string | `mongodb://mongo:2717/game_building` |
+| `REDIS_URL`              | Redis connection string   | `redis://redis:63790`                |
+| `CELERY_BROKER_URL`      | Celery broker URL         | `redis://redis:63790                 |
+| `CELERY_RESULT_BACKEND`  | Celery result backend     | `redis://redis:6379`                 |
+| `CHANNEL_LAYERS_HOSTS`   | Channels Redis hosts      | `redis:6379                          |
 
-## 📡 WebSocket API
+## 🌐 WebSocket API
 
-### Endpoint
+### Connection
 
-```
-ws://localhost:80/ws/game/
-```
+- **URL**: `ws://localhost:80ame/`
+- **Protocol**: WebSocket
 
-### Supported Message Types
+### Message Types
 
-#### 1. Register New Player
+| Type                  | Description                 | Authentication Required |
+| --------------------- | --------------------------- | ----------------------- |
+| `register`            | Register new player         | ❌                      |
+| `login`               | Login as player             | ❌                      |
+| `get_player_info`     | Get player information      | ✅                      |
+| `update_resources`    | Update player resources     | ✅                      |
+| `start_building`      | Start building construction | ✅                      |
+| `accelerate_building` | Speed up construction       | ✅                      |
+| `create_building`     | Create new building type    | ❌                      |
+
+## 🧪 Testing WebSocket API
+
+### Using Postman
+
+1. **Create WebSocket Request**:
+
+   - Open Postman
+   - Click NewWebSocket Request"
+   - Enter URL: `ws://localhost:80/game/`
+   - Click "Connect"
+
+2. **Send Messages**:
+
+   ```json
+   {
+     "type": "register",
+     "username": "testplayer",
+     "password": "secret123",
+     "email": "test@example.com"
+   }
+   ```
+
+### Using Chrome Console
+
+1. **Open Developer Tools**:
+
+   - Press `F12` or right-click →Inspect"
+   - Go toConsole" tab
+
+2. **Connect to WebSocket**:
+
+   ```javascript
+   const ws = new WebSocket("ws://localhost:8000ws/game/");
+
+   ws.onopen = function () {
+     console.log("Connected to WebSocket");
+   };
+
+   ws.onmessage = function (event) {
+     console.log("Received:", JSON.parse(event.data));
+   };
+
+   ws.onerror = function (error) {
+     console.error("WebSocket error:", error);
+   };
+   ```
+
+3. **Send Messages**:
+
+   ```javascript
+   // Register
+   ws.send(
+     JSON.stringify({
+       type: register,
+       username: "testplayer",
+       password: "secret123",
+       email: "test@example.com",
+     })
+   );
+   // Login
+   ws.send(
+     JSON.stringify({
+       type: "login",
+       username: "testplayer",
+       password: "secret123",
+     })
+   );
+   // Get player info
+   ws.send(
+     JSON.stringify({
+       type: get_player_info,
+     })
+   );
+   ```
+
+## 📝 API Examples
+
+### 1. Player Registration
 
 ```json
 {
- type: ster,
-  username": "player1,
-  password": "secret123  email: "player1@example.com"
+  "type": "register",
+  "username": "player1",
+  "password": "secret123",
+  "email": "player1@example.com"
 }
 ```
 
-**Response:**
+**Response**:
 
 ```json
 {
- type":register_success",
- player": {
-  id": player_id,username": "player1  email: "player1@example.com",
- resources: {
-      wood":100
-   stone: 50
-    },
-   buildings": ]
+  "type": "register_success",
+  "player": {
+    "id": "player_id",
+    "username": "player1",
+    "email": "player1@example.com",
+    "resources": {
+      "wood": 10,
+      "stone": 50,
+      "buildings": []
+    }
   }
 }
 ```
 
-####2. Login
-
-```json
-[object Object] type": "login,
-  username": "player1,
-  password": "secret123"
-}
-```
-
-**Response:**
-
-```json
-[object Object]type": login_success",
-  player: { ... }
-}
-```
-
-####3lding Construction
-
-```json
-[object Object]type:start_building",
- building_id": 1
-}
-```
-
-**Response:**
-
-````json
-{
- type:building_started",
- building_id": 1  completion_time: 20250717T00:10.000`
-
-#### 4. Accelerate Building
-```json
-{
-type": "accelerate_building",
-  building_id: 1,
-percent": 50
-}
-````
-
-**Response:**
-
-````json
-{
- type":building_accelerated",
-  building_id":1
- new_finish_eta: 20250717T00:05.000``
-
-#### 5. Update Resources
-```json
-{type":update_resources,
-wood: 200stone": 150
-}
-````
-
-**Response:**
+### 2. Player Login
 
 ```json
 {
- type:update_success",
-  player: { ... }
+  "type": "login",
+  "username": "player1",
+  "password": "secret123"
 }
 ```
 
-#### 6. Get Player Information
+**Response**:
 
 ```json
 {
-  "type": get_player_info"
-}
-```
-
-**Response:**
-
-```json
-{type: player_info",
-  player:{ ... }
-}
-```
-
-### Real-time Notifications
-
-#### Building Completed
-
-```json
-{
- type": "building_completed",
- building_id": 1
-}
-```
-
-#### Player Data Updated
-
-```json
-{
-type:player_updated",
-  player:[object Object]... }
-}
-```
-
-## 🧪 Complete Testing Scenario
-
-### Step1nnect to WebSocket
-
-```javascript
-const ws = new WebSocket('ws://localhost:8000/ws/game/);
-```
-
-### Step 2: Register New Player
-
-```javascript
-ws.send(JSON.stringify({
- type: ster,username:testPlayer,password": "test123,email":test@example.com"
-}));
-```
-
-### Step3lding Construction
-
-```javascript
-ws.send(JSON.stringify([object Object]type:start_building",
-  building_id: 1}));
-```
-
-### Step 4: Monitor Notifications
-
-```javascript
-ws.onmessage = function(event) {
-  const data = JSON.parse(event.data);
-  console.log('Received:', data);
-
-  if (data.type === 'building_completed')[object Object]
-    console.log('Building completed!);
+  "type": "login_success",
+  "player": {
+    "id": "player_id",
+    "username": "player1",
+    "email": "player1@example.com",
+    "resources": {
+      "wood": 10,
+      "stone": 50,
+      "buildings": []
+    }
   }
-};
+}
 ```
 
-## 🔍 Troubleshooting
+### 3. Get Player Information
 
-### Common Issues and Solutions
-
-#### 1. Redis Connection Error
-
-```
-ConnectionError: Error connecting to localhost:6379
+```json
+{
+  "type": "get_player_info"
+}
 ```
 
-**Solution:** Ensure `CHANNEL_LAYERS_HOSTS` is set to `redis:6379` in Docker environment.
+**Response**:
 
-#### 2. Module Import Error
-
-```
-ModuleNotFoundError: No module named 'config'
-```
-
-**Solution:** Verify all app/module names are prefixed with `game_building.` in settings and apps.py.
-
-#### 3. MongoDB Connection Error
-
-```
-ConnectionError: MongoDB connection failed
-```
-
-**Solution:** Ensure MongoDB service is running and `MONGO_URI` is correct.
-
-#### 4. Celery Task Error
-
-```
-Celery worker not processing tasks
-```
-
-**Solution:** Check Celery logs:
-
-```bash
-docker-compose logs celery
+```json
+{
+  "type": "player_info",
+  "player": {
+    "id": "player_id",
+    "username": "player1",
+    "email": "player1@example.com",
+    "resources": {
+      "wood": 10,
+      "stone": 50,
+      "buildings": [
+        {
+          "building_id": "1",
+          "status": "progress",
+          "started_at": "2025-07-07T07:00:00Z",
+          "finish_eta": "2025-07-07T07:00:00Z",
+          "celery_task_id": "task_id"
+        }
+      ]
+    }
+  }
+}
 ```
 
-### Useful Diagnostic Commands
+### 4. Update Resources
 
-```bash
-# View all service logs
-docker-compose logs
-
-# View specific service logs
-docker-compose logs backend
-docker-compose logs celery
-docker-compose logs mongo
-
-# Restart specific service
-docker-compose restart backend
-
-# Remove all data and rebuild
-docker-compose down -v
-docker-compose up --build
+```json
+{
+  "type": "update_resources",
+  "wood": 200,
+  "stone": 150
+}
 ```
 
-## 📊 Data Management
+**Response**:
 
-### Backup
-
-```bash
-# Backup database
-docker-compose exec mongo mongodump --db game_building --out /backup
-
-# Restore backup
-docker-compose exec mongo mongorestore --db game_building /backup/game_building
+```json
+{
+  "type": "update_success",
+  "player": {
+    "id": "player_id",
+    "username": "player1",
+    "resources": {
+      "wood": 200,
+      "stone": 150,
+      "buildings": []
+    }
+  }
+}
 ```
 
-### Performance Monitoring
+### 5Start Building
 
-```bash
-# Monitor resource usage
-docker stats
-
-# Monitor application logs
-docker-compose logs -f backend
+```json
+{
+  "type": "start_building",
+  "building_id": 1
+}
 ```
 
-## 🤝 Contributing
+**Response**:
 
-1. Fork the project
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -mAdd some AmazingFeature`)
-   4.Push to the branch (`git push origin feature/AmazingFeature`)
-4. Open a Pull Request
+```json
+{
+  "type": "building_started",
+  "building_id": 1,
+  "completion_time": "2025-07-17T00:10:00.00"
+}
+```
 
-## 📝 License
+### 6. Accelerate Building
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+```json
+{
+  "type": "accelerate_building",
+  "building_id": 1,
+  "percent": 50
+}
+```
 
-## 📞 Support
+**Response**:
 
-If you encounter any issues or have questions:
+```json
+{
+  "type": "building_accelerated",
+  "building_id": 1,
+  "new_finish_eta": "2025-07-17T00:05:00"
+}
+```
 
-- Open an issue on GitHub
-- Check the troubleshooting section above
-- Review Docker logs
+## 🔄 Real-time Notifications
 
----
+The server sends automatic notifications for:
 
-**This project is developed using Django, MongoDB, and WebSocket to provide an interactive real-time gaming experience.**
+### Building Completed
+
+```json
+{
+  "type": "building_completed",
+  "building_id": 1
+}
+```
+
+### Player Updated
+
+```json
+{
+  "type": "player_updated",
+  "player": {
+    "id": "player_id",
+    "username": "player1",
+    "resources": {
+      "wood": 10,
+      "stone": 50,
+      "buildings": []
+    }
+  }
+}
+```
+
+## 📁 Project Structure
+
+```
+game_building/
+├── apps/
+│   ├── players/          # Player management
+│   │   ├── models.py     # Player and PlayerBuilding models
+│   │   ├── services.py   # Business logic
+│   │   ├── serializers.py # DRF serializers
+│   │   └── tasks.py      # Celery tasks
+│   └── buildings/        # Building management
+│       ├── models.py     # Building model
+│       ├── services.py   # Building logic
+│       └── serializers.py # Building serializers
+├── config/               # Django settings
+│   ├── settings.py       # Main settings
+│   ├── urls.py          # URL configuration
+│   ├── asgi.py          # ASGI application
+│   └── celery.py        # Celery configuration
+├── consumers.py         # WebSocket consumers
+├── routing.py           # WebSocket routing
+├── docker-compose.yaml  # Docker services
+└── Dockerfile          # Backend container
+```
+
+**Happy Building! 🏗️✨**
