@@ -1,3 +1,4 @@
+# 🏗️ Game Building Backend
 
 A real-time game simulation backend built with Django, MongoDB, Celery, Redis, and WebSocket support using Django Channels.
 
