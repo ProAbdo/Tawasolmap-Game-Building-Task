@@ -5,12 +5,8 @@ from channels.layers import get_channel_layer
 
 def update_building_status(player, building_id):
     updated = False
-    from game_building.apps.buildings.models import Building
-
-    building = Building.objects.get(building_id=building_id)
     player_building = player.get_building(building_id)
     if player_building and player_building.status == "in_progress":
-        player.consume_resources(building.required_wood, building.required_stone)
         player_building.status = "completed"
         player_building.celery_task_id = None
         updated = True
