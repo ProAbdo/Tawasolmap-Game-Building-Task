@@ -401,8 +401,8 @@ game_building/
 │   └── celery.py        # Celery configuration
 ├── consumers.py         # WebSocket consumers
 ├── routing.py           # WebSocket routing
-├── docker-compose.yaml  # Docker services
-└── Dockerfile          # Backend container
+docker-compose.yaml # Docker services
+Dockerfile          # Backend container
 ```
 
 **Happy Building! ✨**
