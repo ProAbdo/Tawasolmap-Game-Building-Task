@@ -185,8 +185,8 @@ The following environment variables are configured in `docker-compose.yaml`:
     "username": "player1",
     "email": "player1@example.com",
     "resources": {
-      "wood": 10,
-      "stone": 50,
+      "wood": 1000,
+      "stone": 1000,
       },
       "buildings": []
   }
@@ -213,8 +213,8 @@ The following environment variables are configured in `docker-compose.yaml`:
     "username": "player1",
     "email": "player1@example.com",
     "resources": {
-      "wood": 10,
-      "stone": 50,
+      "wood": 1000,
+      "stone": 1000,
       },
       "buildings": []
   }
@@ -239,18 +239,10 @@ The following environment variables are configured in `docker-compose.yaml`:
     "username": "player1",
     "email": "player1@example.com",
     "resources": {
-      "wood": 10,
-      "stone": 50,
+      "wood": 1000,
+      "stone": 1000,
       },
-      "buildings": [
-        {
-          "building_id": "1",
-          "status": "progress",
-          "started_at": "2025-07-07T07:00:00Z",
-          "finish_eta": "2025-07-07T07:00:00Z",
-          "celery_task_id": "task_id"
-        }
-      ]
+      "buildings": []
   }
 }
 ```
@@ -281,8 +273,37 @@ The following environment variables are configured in `docker-compose.yaml`:
   }
 }
 ```
+### 5. Create Building
 
-### 5Start Building
+```json
+{
+  "type": "create_building",
+  "name": "Tower",
+  "build_time": 100, # build_time by seconds
+  "required_wood": 1,
+  "required_stone": 1,
+  "dependencies": []
+}
+```
+
+**Response**:
+
+```json
+ {
+    "type": "create_building_success",
+    "building": {
+        "id": "687948b0bffebbedce620a57",
+        "building_id": 1,
+        "name": "Tower",
+        "build_time": 100,
+        "required_wood": 1,
+        "required_stone": 1,
+        "dependencies": []
+    }
+}
+```
+
+### 6. Start Building
 
 ```json
 {
@@ -301,7 +322,7 @@ The following environment variables are configured in `docker-compose.yaml`:
 }
 ```
 
-### 6. Accelerate Building
+### 7. Accelerate Building
 
 ```json
 {
@@ -343,10 +364,18 @@ The server sends automatic notifications for:
     "id": "player_id",
     "username": "player1",
     "resources": {
-      "wood": 10,
-      "stone": 50,
+      "wood": 199,
+      "stone": 449,
       }
-      "buildings": []
+      "buildings": [
+         {
+             "building_id": "1",
+             "status": "completed",
+             "started_at": "2025-07-17T15:50:34.687000Z",
+             "finish_eta": "2025-07-17T15:51:16.759000Z",
+             "celery_task_id": null
+         }
+      ]
   }
 }
 ```
@@ -372,8 +401,8 @@ game_building/
 │   └── celery.py        # Celery configuration
 ├── consumers.py         # WebSocket consumers
 ├── routing.py           # WebSocket routing
-├── docker-compose.yaml  # Docker services
-└── Dockerfile          # Backend container
+docker-compose.yaml # Docker services
+Dockerfile          # Backend container
 ```
 
 **Happy Building! ✨**
