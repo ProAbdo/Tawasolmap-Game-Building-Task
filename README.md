@@ -333,7 +333,7 @@ The following environment variables are configured in `docker-compose.yaml`:
 
 ```
 
-### 6. Start Building
+### 7. Start Building
 
 ```json
 {
@@ -352,7 +352,7 @@ The following environment variables are configured in `docker-compose.yaml`:
 }
 ```
 
-### 7. Accelerate Building
+### 8. Accelerate Building
 
 ```json
 {
