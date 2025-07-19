@@ -81,6 +81,7 @@ The following environment variables are configured in `docker-compose.yaml`:
 | ---------------------  | --------------------------- | ----------------------- |
 | `register`             | Register new player         | ❌                      |
 | `login`                | Login as player             | ❌                      |
+| `logout`               | Logout the player           | ✅                      |
 | `get_player_info`      | Get player information      | ✅                      |
 | `get_allowed_buildings`| Get player allowed buildings| ✅                      |
 | `update_resources`     | Update player resources     | ✅                      |
