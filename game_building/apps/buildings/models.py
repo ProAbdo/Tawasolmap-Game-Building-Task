@@ -25,3 +25,7 @@ class Building(models.Model):
         verbose_name = "Building"
         verbose_name_plural = "Buildings"
         ordering = ["name"]
+        indexes = [
+            models.Index(fields=["building_id"]),
+            models.Index(fields=["name"]),
+        ]

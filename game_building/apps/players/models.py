@@ -61,6 +61,10 @@ class Player(models.Model):
         ordering = ["username"]
         verbose_name = "Player"
         verbose_name_plural = "Players"
+        indexes = [
+            models.Index(fields=["username"]),
+            models.Index(fields=["email"]),
+        ]
 
     def has_sufficient_resources(self, required_wood, required_stone):
         """Check if player has enough resources for building."""

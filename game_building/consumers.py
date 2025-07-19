@@ -17,6 +17,7 @@ from game_building.apps.players.services import (
 from game_building.apps.buildings.services import (
     accelerate_building,
     create_building,
+    get_allowed_buildings,
 )
 
 
@@ -55,6 +56,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                 "accelerate_building": self.handle_accelerate_building,
                 "update_resources": self.handle_update_resources,
                 "get_player_info": self.handle_get_player_info,
+                "get_allowed_buildings": self.handle_get_allowed_buildings,
             }.get(msg_type)
 
             if handler:
@@ -94,14 +96,21 @@ class GameConsumer(AsyncWebsocketConsumer):
         if not can_start:
             return await self.send_error(error)
 
-        completion_time = await start_building_for_player(self.player, building)
-        await self.send_json(
-            {
-                "type": "building_started",
-                "building_id": str(building_id),
-                "completion_time": completion_time.isoformat(),
-            }
-        )
+        try:
+            completion_time = await start_building_for_player(self.player, building)
+            await self.send_json(
+                {
+                    "type": "building_started",
+                    "building_id": str(building_id),
+                    "completion_time": completion_time.isoformat(),
+                }
+            )
+        except ValueError as e:
+            await self.send_error(str(e), "building_start_failed")
+        except Exception as e:
+            await self.send_error(
+                f"Unexpected error starting building: {str(e)}", "building_start_failed"
+            )
 
     async def handle_create_building(self, data):
         building, error = await create_building(data)
@@ -128,6 +137,11 @@ class GameConsumer(AsyncWebsocketConsumer):
     @require_auth
     async def handle_get_player_info(self, data):
         result = await get_player_info(self.player)
+        await self.send_json(result)
+
+    @require_auth
+    async def handle_get_allowed_buildings(self, data):
+        result = await get_allowed_buildings(self.player)
         await self.send_json(result)
 
     async def building_completed(self, event):
