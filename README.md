@@ -319,10 +319,10 @@ The following environment variables are configured in `docker-compose.yaml`:
     "type": "allowed_buildings",
     "buildings": [
         {
-            "id": "6878646c076721ec827b276e",
+            "id": "687948b0bffebbedce620a57",
             "building_id": 1,
             "name": "Tower",
-            "build_time": 110,
+            "build_time": 100,
             "required_wood": 1,
             "required_stone": 1,
             "dependencies": [],
@@ -330,6 +330,7 @@ The following environment variables are configured in `docker-compose.yaml`:
             "missing_resources": null
         }
 }
+
 ```
 
 ### 6. Start Building
