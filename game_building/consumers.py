@@ -1,8 +1,7 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
-from functools import wraps
-
+from .decorators import require_auth
 from game_building.apps.players.models import Player
 from game_building.apps.players.serializers import PlayerSerializer
 from game_building.apps.buildings.serializers import BuildingSerializer
@@ -19,19 +18,6 @@ from game_building.apps.buildings.services import (
     create_building,
     get_allowed_buildings,
 )
-
-
-def require_auth(func):
-    @wraps(func)
-    async def wrapper(self, *args, **kwargs):
-        if not self.player:
-            return await self.send_error("Not authenticated")
-
-        await sync_to_async(self.player.refresh_from_db)()
-        return await func(self, *args, **kwargs)
-
-    return wrapper
-
 
 class GameConsumer(AsyncWebsocketConsumer):
     async def connect(self):
