@@ -77,15 +77,16 @@ The following environment variables are configured in `docker-compose.yaml`:
 
 ### Message Types
 
-| Type                  | Description                 | Authentication Required |
-| --------------------- | --------------------------- | ----------------------- |
-| `register`            | Register new player         | ❌                      |
-| `login`               | Login as player             | ❌                      |
-| `get_player_info`     | Get player information      | ✅                      |
-| `update_resources`    | Update player resources     | ✅                      |
-| `start_building`      | Start building construction | ✅                      |
-| `accelerate_building` | Speed up construction       | ✅                      |
-| `create_building`     | Create new building type    | ❌                      |
+| Type                   | Description                 | Authentication Required |
+| ---------------------  | --------------------------- | ----------------------- |
+| `register`             | Register new player         | ❌                      |
+| `login`                | Login as player             | ❌                      |
+| `get_player_info`      | Get player information      | ✅                      |
+| `get_allowed_buildings`| Get player allowed buildings| ✅                      |
+| `update_resources`     | Update player resources     | ✅                      |
+| `start_building`       | Start building construction | ✅                      |
+| `accelerate_building`  | Speed up construction       | ✅                      |
+| `create_building`      | Create new building type    | ❌                      |
 
 ## 🧪 Testing WebSocket API
 
