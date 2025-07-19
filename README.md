@@ -305,6 +305,33 @@ The following environment variables are configured in `docker-compose.yaml`:
 }
 ```
 
+### 6. Get Allowed Buildings
+
+```json
+{
+  "type": "get_allowed_buildings"
+}
+```
+**Response**:
+
+```json
+{
+    "type": "allowed_buildings",
+    "buildings": [
+        {
+            "id": "6878646c076721ec827b276e",
+            "building_id": 1,
+            "name": "Tower",
+            "build_time": 110,
+            "required_wood": 1,
+            "required_stone": 1,
+            "dependencies": [],
+            "can_afford": true,
+            "missing_resources": null
+        }
+}
+```
+
 ### 6. Start Building
 
 ```json
@@ -387,24 +414,25 @@ The server sends automatic notifications for:
 ```
 game_building/
 ├── apps/
-│   ├── players/          # Player management
-│   │   ├── models.py     # Player and PlayerBuilding models
-│   │   ├── services.py   # Business logic
+│   ├── players/           # Player management
+│   │   ├── models.py      # Player and PlayerBuilding models
+│   │   ├── services.py    # Business logic
 │   │   ├── serializers.py # DRF serializers
-│   │   └── tasks.py      # Celery tasks
-│   └── buildings/        # Building management
-│       ├── models.py     # Building model
-│       ├── services.py   # Building logic
+│   │   └── tasks.py       # Celery tasks
+│   └── buildings/         # Building management
+│       ├── models.py      # Building model
+│       ├── services.py    # Building logic
 │       └── serializers.py # Building serializers
-├── config/               # Django settings
-│   ├── settings.py       # Main settings
-│   ├── urls.py          # URL configuration
-│   ├── asgi.py          # ASGI application
-│   └── celery.py        # Celery configuration
-├── consumers.py         # WebSocket consumers
-├── routing.py           # WebSocket routing
-docker-compose.yaml # Docker services
-Dockerfile          # Backend container
+├── config/                # Django settings
+│   ├── settings.py        # Main settings
+│   ├── urls.py            # URL configuration
+│   ├── asgi.py            # ASGI application
+│   └── celery.py          # Celery configuration
+├── consumers.py           # WebSocket consumers
+├── decorators.py          # WebSocket decorators
+├── routing.py             # WebSocket routing
+docker-compose.yaml        # Docker services
+Dockerfile                 # Backend container
 ```
 
 **Happy Building! ✨**
