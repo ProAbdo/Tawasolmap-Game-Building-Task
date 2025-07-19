@@ -51,6 +51,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             handler = {
                 "register": self.handle_register,
                 "login": self.handle_login,
+                "logout": self.handle_logout,
                 "start_building": self.handle_start_building,
                 "create_building": self.handle_create_building,
                 "accelerate_building": self.handle_accelerate_building,
@@ -78,6 +79,12 @@ class GameConsumer(AsyncWebsocketConsumer):
         await self.send_json(result)
 
     async def handle_login(self, data):
+        if self.player:
+            await self.send_json({
+                "type": "login_failed",
+                "error": "Already logged in"
+            })
+            return
         player, error = await login_player(data)
         if player:
             self.player = player
@@ -88,6 +95,14 @@ class GameConsumer(AsyncWebsocketConsumer):
             await self.send_json({"type": "login_success", "player": serialized.data})
         else:
             await self.send_json({"type": "login_failed", "error": error})
+    @require_auth
+    async def handle_logout(self, data):
+        # Leave the group
+        await self.channel_layer.group_discard(
+            f"player_{self.player.id}", self.channel_name
+        )
+        self.player = None  # Clear session
+        await self.send_json({"type": "logout_success"})
 
     @require_auth
     async def handle_start_building(self, data):
