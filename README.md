@@ -20,6 +20,7 @@ A real-time game simulation backend built with Django, MongoDB, Celery, Redis, a
 - **Task Queue**: Celery
 - **WebSocket**: Django Channels
 - **Containerization**: Docker & Docker Compose
+- **Package Management**: Poetry
 
 ## 📋 Prerequisites
 
